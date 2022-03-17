@@ -19,16 +19,44 @@ void checker();
 void canPlace();
 void place();
 void algorithm();
+void printBoard();
 
 int main()
 {
     /* code */
-    checker();
-    printf("%d\n", v0);
-    a0 = 1;
-    canPlace();
-    printf("%d\n", v0);
-    return 0;
+    while(1){
+        printBoard();
+        _valid_input_col:
+        printf("Please enter which column [1-7] you would like to play\n");
+        v0 = 0;
+        scanf("%d", &v0);
+        if(v0 < 1 || v0 > 7){
+            printf("Please enter a column within bounds\n");
+            goto _valid_input_col;
+        }
+        a0 = v0 - 1;//set a0 to col, which is v0 - 1
+        canPlace();
+        if(v0 == 0){
+            printf("Please enter a column that is not full\n");
+            goto _valid_input_col;
+        }
+        a1 = a0;//set a1 to col number, which is a0
+        a0 = -1;//set a0 to color, which is -1
+        place();
+        checker();
+
+        printBoard();
+        algorithm();
+        checker();
+        //check for tie somehow
+    }
+
+    // checker();
+    // printf("%d\n", v0);
+    // a0 = 1;
+    // canPlace();
+    // printf("%d\n", v0);
+    // return 0;
 }
 void checker(){
     //no arguments
@@ -204,6 +232,13 @@ void checker(){
     t3 = 0;//if a four in a row isn't found, then 0 will be returned
     _checker_end://only goes here if a four in a row is found
     v0 = t3;
+    if(v0 == -1){
+        printf("Player wins!\n");
+        exit(EXIT_SUCCESS);
+    }else if(v0 == 1){
+        printf("Computer wins!\n");
+        exit(EXIT_SUCCESS);
+    }
 }
 void canPlace(){
     //a0 - column to check
@@ -231,6 +266,15 @@ void algorithm(){
     a0 = 1;
     a1 = t0;
     place();
+    printf("\nComputerMove\n");
+}
+void printBoard(){
+    for(int i = 0; i < 6; i++){
+        for(int j = 0; j < 7; j++){
+            printf("%3d", board[i * 7 + j]);
+        }
+        printf("\n");
+    }
 }
 // void checkerHelper(){
 //     if(t7 == -4)
