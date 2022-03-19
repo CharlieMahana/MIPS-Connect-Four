@@ -73,7 +73,7 @@ _load_token:
 	li	$v0,	14		# system call for read from file
 	move	$a0,	$t0		# file descriptor
 	lw	$a1,	token		# address of input buffer
-	li	$a2,	0x100		# maximum number of characters to read
+	li	$a2,	0x1000		# maximum number of characters to read
 	syscall
 	
 	# ensure that an error has not occured (i.e. $v0 is negative)
@@ -117,3 +117,72 @@ _abort:
 	# if an error occurs during initialization, abort program
 	li	$v0	10		# system call for exiting
 	syscall	
+	
+	.globl place_token
+
+place_token:
+	# place token is a procedure that takes a location and color and
+	# places a token on the board at that location
+	# a0: horizontal location (left to right indexed at 0)
+	# a1: vertical location (top to bottom indexed at 0)
+	# a3: color (0 for red, non-zero for yellow)
+
+_initialize_cell_location:
+	# determine top left corner of token location cell
+	li	$s0, 	0x10040000	# cell location and start of buffer
+	
+_account_for_horizontal_padding:
+	# adjust cell location to account for 16 pixel padding on left
+	add	$s0,	$s0,	68	# shifts current location by 16 pixels to the 17th pixel
+	
+_account_for_vertical_padding:
+	# adjust cell location to accoutn for 64 pixel padding on top
+	add 	$s0,	$s0,	0x10000	# shifts current location down by 64 pixels
+	
+_shift_to_horizontal_location:
+	# shift cell location horizontally to proper location
+	li	$t0,	0		# set iterator to 0
+_loop2:	bge	$t0,	$a0	_shift_to_vertical_location
+	add	$s0,	$s0,	0x80	# shift current location horizontally by one token cell
+	add	$t0,	$t0,	1	# increment iterator by 1
+	j 	_loop2
+
+_shift_to_vertical_location:
+	# shift cell location vertically to proper location
+	li	$t0,	0		# set iterator to 0
+_loop3:	bge	$t0,	$a1,	_determine_token_color
+	add	$s0,	$s0,	0x8000	# shift current location vertically by one token cell
+	add	$t0,	$t0,	1	# increment iterator by 1
+	j	_loop3
+
+_determine_token_color:
+	# sets the token color for drawing
+	bgt	$a2,	0,	_else0	# if color is not 0
+	li	$s1,	0xe53835	# sets token color to red
+	j	_draw_token		# go to next step
+_else0:	li	$s1,	0xffee58	# if color is not 0 set color to yellow
+	j	_draw_token		# go to next step
+	
+_draw_token:
+	# draw token at cell location
+	li	$t0,	0		# horizontal cell iterator
+	li	$t1,	0		# vertical cell iterator
+	lw	$t2,	token		# token data iterator
+	
+_loop4:	blt 	$t0,	32,	_loop5	# when current location hasn't yet reached the edge of the cell
+	li	$t0,	0		# reset horizontal cell iterator
+	add	$t1,	$t1,	1	# increment vertical cell iterator
+	add	$s0,	$s0,	0x380	# move location from rightmost side of current cell row to leftmost side of lower cell row
+_loop5:	bge	$t1,	32,	_end_procedure	# when finished iterating, return from procedure
+	lw	$t3,	($t2)		# set $t3 to the color at current location in token data
+	bne	$t3,	0x0,	_else1	# if color at current location in token data isn't black
+	sw	$s1,	($s0)		# draw pixel
+_else1:	add	$t0,	$t0,	1	# increment horizontal cell iterator
+	add	$s0,	$s0,	4	# move current location horizontally by one pixel
+	add	$t2,	$t2,	4	# move location in token data by one pixel
+	j	_loop4
+
+	
+
+	
+	
