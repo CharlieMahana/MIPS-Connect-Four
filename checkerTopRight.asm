@@ -73,17 +73,17 @@ while1:
         lw  	$t3, board($t2)     # $t3 = board[t2]; Get the value of the board at the index
         add		$t7, $t7, $t3        # $t7 = $t7 + $t3; Add the value of the board at the index to the total sum
 
-        add		$t2, $t2, 20			# $t2 = $t2 + 6*4; Add 6 to the index
+        add		$t2, $t2, 24			# $t2 = $t2 + 6*4; Add 6 to the index
         #Make $t2 word aligned
         sll		$t2, $t2, 	2		# $t2 = $t2 << 0
         lw		$t3, board($t2)     # $t3 = board[t2]; Get the value of the board at the index
         add		$t7, $t7, $t3        # $t7 = $t7 + $t3; Add the value of the board at the index to the total sum
 
-        add		$t2, $t2, 20			# $t2 = $t2 + 6*4; Add 6 to the index
+        add		$t2, $t2, 24			# $t2 = $t2 + 6*4; Add 6 to the index
         lw		$t3, board($t2)     # $t3 = board[t2]; Get the value of the board at the index
         add		$t7, $t7, $t3        # $t7 = $t7 + $t3; Add the value of the board at the index to the total sum
 
-        add		$t2, $t2, 20			# $t2 = $t2 + 6*4; Add 6 to the index
+        add		$t2, $t2, 24			# $t2 = $t2 + 6*4; Add 6 to the index
         lw		$t3, board($t2)     # $t3 = board[t2]; Get the value of the board at the index
         add		$t7, $t7, $t3        # $t7 = $t7 + $t3; Add the value of the board at the index to the total sum
 

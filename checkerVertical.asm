@@ -97,17 +97,17 @@ while:
     add		$t7, $t7, $t3        # $t7 = $t7 + $t3; Add the value of the board at the index to the total sum
 
     #1
-    add		$t2, $t2, 24        # $t2 = $t2 + 4*7;
+    add		$t2, $t2, 28        # $t2 = $t2 + 4*7;
     lw		$t4, board($t2)     # $t4 = board[t2]; Get the value of the board at the index
     add		$t7, $t7, $t4        # $t7 = $t7 + $t4; Add the value of the board at the index to the total sum
 
     #2
-    add		$t2, $t2, 24        # $t2 = $t2 + 4*7;
+    add		$t2, $t2, 28        # $t2 = $t2 + 4*7;
     lw		$t5, board($t2)     # $t5 = board[t2]; Get the value of the board at the index
     add		$t7, $t7, $t5        # $t7 = $t7 + $t5; Add the value of the board at the index to the total sum
 
     #3
-    add		$t2, $t2, 24 # $t2 = $t2 + 4*7;
+    add		$t2, $t2, 28 # $t2 = $t2 + 4*7;
     lw		$t6, board($t2)     # $t6 = board[t2]; Get the value of the board at the index
     add		$t7, $t7, $t6        # $t7 = $t7 + $t6; Add the value of the board at the index to the total sum
 
@@ -121,7 +121,7 @@ while:
 
     #Set 1 to 4
     #4
-    add		$t2, $t2, 24 # $t2 = $t2 + 4*7;
+    add		$t2, $t2, 28 # $t2 = $t2 + 4*7;
     lw		$t3, board($t2)     # $t3 = board[t2]; Get the value of the board at the index
     add		$t7, $t7, $t3        # $t7 = $t7 + $t3; Add the value of the board at the index to the total sum
 
@@ -135,37 +135,9 @@ while:
 
     #Set 2 to 5
     #5
-    add		$t2, $t2, 24 # $t2 = $t2 + 4*7;
+    add		$t2, $t2, 28 # $t2 = $t2 + 4*7;
     lw		$t4, board($t2)     # $t6 = board[t2]; Get the value of the board at the index
     add		$t7, $t7, $t4        # $t7 = $t7 + $t6; Add the value of the board at the index to the total sum
-
-    #If t7 is -4
-    beq		$t7, -4, _computer_wins # if $t7 == -4 then computer wins
-    #If t7 is 4
-    beq		$t7, 4, _human_wins # if $t7 == 4 then human wins
-
-    #Subtract 2 from total sum
-    sub		$t7, $t7, $t5        # $t7 = $t7 - $t3; Subtract the value of the board at the index from the total sum
-
-    #Set 3 to 6
-    #6
-    add		$t2, $t2, 24 # $t2 = $t2 + 4*7;
-    lw		$t5, board($t2)     # $t6 = board[t2]; Get the value of the board at the index
-    add		$t7, $t7, $t5        # $t7 = $t7 + $t6; Add the value of the board at the index to the total sum
-
-    #If t7 is -4
-    beq		$t7, -4, _computer_wins # if $t7 == -4 then computer wins
-    #If t7 is 4
-    beq		$t7, 4, _human_wins # if $t7 == 4 then human wins
-
-    #Subtract 2 from total sum
-    sub		$t7, $t7, $t6        # $t7 = $t7 - $t3; Subtract the value of the board at the index from the total sum
-
-    #Set 4 to 7
-    #7
-    add		$t2, $t2, 24 # $t2 = $t2 + 4*7;
-    lw		$t6, board($t2)     # $t6 = board[t2]; Get the value of the board at the index
-    add		$t7, $t7, $t6        # $t7 = $t7 + $t6; Add the value of the board at the index to the total sum
 
     #If t7 is -4
     beq		$t7, -4, _computer_wins # if $t7 == -4 then computer wins
