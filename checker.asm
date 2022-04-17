@@ -86,45 +86,56 @@
 
     #vertical
     #human win
-    #0,0,1,0,0,0,
-    #0,0,1,0,0,0,
-    #0,0,1,0,0,0,
-    #0,0,1,0,0,0,
-    #0,0,0,0,0,0,
-    #0,0,0,0,0,0,
-    #0,0,0,0,0,0,
-    board: .word 0,0,-1,0,0,0, 0,0,-1,0,0,0, 0,0,-1,0,0,0, 0,0,-1,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0,
+    #0,0,1,0,0,0,0
+    #0,0,1,0,0,0,0
+    #0,0,1,0,0,0,0
+    #0,0,1,0,0,0,0
+    #0,0,0,0,0,0,0
+    #0,0,0,0,0,0,0
+    #board: .word 0,0,-1,0,0,0, 0,0,-1,0,0,0, 0,0,-1,0,0,0, 0,0,-1,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0,
 
 
 
 .text 
-    .globl board 
-    .globl main
-    main:
-    #addiu $sp, $sp, -4
-    #jal		check_top_left				# jump to check_top_left and save position to $ra
-    #lw $t1, 0($sp)
-    #addiu $sp, $sp, 4
-    
-    #addiu $sp, $sp, -4
-    #jal		check_top_right				# jump to check_top_right and save position to $ra
-    #lw $t2, 0($sp)
-    #addiu $sp, $sp, 4
+    #.globl board 
+    .globl checker
+    checker:
 
-    #addiu $sp, $sp, -4
-    #jal		check_horizontal				# jump to check_horizontal and save position to $ra
-    #lw $t1, 0($sp)
-    #addiu $sp, $sp, 4
+    #store return address on stack
+    addiu $sp, $sp, -4
+    sw		$ra, 0($sp)
+
+    addiu $sp, $sp, -4
+    jal		check_top_left				# jump to check_top_left and save position to $ra
+    lw $v0, 0($sp)
+    addiu $sp, $sp, 4
+    bne	$v0, $zero, end # if $t0 != $t1 then target
+
+    
+    addiu $sp, $sp, -4
+    jal		check_top_right				# jump to check_top_right and save position to $ra
+    lw $v0, 0($sp)
+    addiu $sp, $sp, 4
+    bne		$v0, $zero, end # if $t0 != $t1 then target
+
+    addiu $sp, $sp, -4
+    jal		check_horizontal				# jump to check_horizontal and save position to $ra
+    lw $v0, 0($sp)
+    addiu $sp, $sp, 4
+    bne		$v0, $zero, end # if $t0 != $t1 then target
 
     addiu $sp, $sp, -4
     jal		check_vertical				# jump to check_vertical and save position to $ra
-    lw $t1, 0($sp)
+    lw $v0, 0($sp)
     addiu $sp, $sp, 4
- 
-    #end program
-    li $v0 , 10
-    add $a0, $0, $0  # load desired value into argument register $a0, using pseudo-op
-    syscall 
+    bne		$v0, $zero, end # if $t0 != $t1 then target
+
+
+    end:
+    #restore return address from stack
+    lw		$ra, 0($sp)		# 
+    addiu $sp, $sp, 4
+    jr $ra
     
     #li  $v0,10
     #syscall
