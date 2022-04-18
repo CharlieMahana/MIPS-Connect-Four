@@ -6,9 +6,7 @@
 
     .text
 
-.globl can_place
-.globl place
-.globl print_board
+#.globl misc
 li $a0, 0
 li $a1, 1
 j place
