@@ -102,8 +102,19 @@ print_board_end:
 # AI ALGORITHM
 
 algorithm:
+    #Save the return address
+    subi $sp, $sp, 4
+    sw $ra, 0($sp)
+
     li $v0, 0
-    j ai_place_loop
+    jal ai_place_loop
+
+    #restore the return address
+    lw	$ra, 0($sp) 	
+    addi $sp, $sp, 4
+
+    jr $ra
+    
 
 ai_place_loop:
     # load a random number into $t0
@@ -116,7 +127,15 @@ ai_place_loop:
     mfhi $s1
 
     move $a0, $s1 # store the random number in $a0
+
+    # Save the return address
+    subi $sp, $sp, 4
+    sw $ra, 0($sp)
     jal can_place
+
+    #restore the return address
+    lw	$ra, 0($sp) 	
+    addi $sp, $sp, 4
 
     beq $v0, 0, ai_place_loop # if invalid, try again
     move $a1, $s1 # store the random number in $a1
@@ -131,6 +150,15 @@ ai_place_loop:
     syscall
     ###end print
     
+    # Save the return address
+    subi $sp, $sp, 4
+    sw $ra, 0($sp)
+
     li $a0, 1
     jal place
+
+    #restore the return address
+    lw	$ra, 0($sp) 	
+    addi $sp, $sp, 4
+
     jr $ra

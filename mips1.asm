@@ -101,7 +101,7 @@ while:
 	jal checker
 	beq		$v0, 1, _human_wins # if $t0 == $t1 then target
 	beq		$v0, -1, _computer_wins # if $t0 == $t1 then target
-	jal print_board
+	# jal print_board
 	jal algorithm #need to implement
 	jal checker
 	beq		$v0, 1, _human_wins # if $t0 == $t1 then target
