@@ -110,6 +110,7 @@ while:
 	#Check for tie and increment number of moves
 	addi	$s1, $s1, 2
 	beq		$s1, 42 , _tie # if $t0 == $t1 then target
+	j		while
 
 endWhile:
 
