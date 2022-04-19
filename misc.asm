@@ -6,20 +6,22 @@
 
     .text
 
-.globl can_place
-.globl place
 .globl print_board
+.globl place
+.globl can_place
 li $a0, 0
 li $a1, 1
 j place
 # PLACING CHECKER
 ###############################################################################################
 can_place: 
-    mul $a0, $a0, 4
+    move $t0, $a0
+    mul $t0, $t0, 4
+    lw $t1, top($t0)
     
-    lw $t1, board($a0) # get the value of the column
-    beq $t1, $zero, can_place_end # if the column is full, return 0
-    j cannot_place # if the column is not full, return 1
+    li $t2, 7
+    blt $t1, $t2, cannot_place # if the column is not full, return 1
+    j can_place_end # if the column is full, return 0
 
 can_place_end:
     li $v0, 1
@@ -34,21 +36,15 @@ cannot_place:
 # PLACING TOKEN FUNCTIONS
 ###############################################################################################
 place:
-    move $t0, $a0 # get the column to place in
+    move $t0, $a1 # get the column to place in
     mul $t0, $t0, 4
-    li $t2, 144 # start at the beginning of bottom row
-    add $t0, $t2, $t0 # desired column of bottom row
-    move $t1, $a1 # get the color to place
-    j find_top # find the top of the column
-
-find_top:
-    lw $t2, board($t0) # get the value of the column
-    beq $t2, $zero, insert_token # if the column is empty, return 0
-    sub $t0, $t0, 24 # if the column is not empty, move up 6 spaces
-    j find_top
+    lw $t2, top($t0) # get the space to place token
+    mul $t2, $t2, 4
+    move $t1, $a0 # get the color to place
+    j insert_token # find the top of the column
 
 insert_token:
-    sw $t1, board($t0) # insert the token
+    sw $t1, board($t2) # insert the token
     j print_board
 ###############################################################################################
 
@@ -64,6 +60,9 @@ print_board:
 print_board_loop:
     lw $a0, board($t0) # start at the first one in the row
     li $v0, 1
+    syscall
+    addi $t0, $t0, 4 # move to the next column
+    lw $a0, board($t0) # start at the first one in the row
     syscall
     addi $t0, $t0, 4 # move to the next column
     lw $a0, board($t0) # start at the first one in the row
