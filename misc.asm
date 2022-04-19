@@ -9,6 +9,7 @@
 .globl print_board
 .globl place
 .globl can_place
+.globl algorithm
 li $a0, 0
 li $a1, 1
 j place
@@ -41,6 +42,13 @@ place:
     lw $t2, top($t0) # get the space to place token
     mul $t2, $t2, 4
     move $t1, $a0 # get the color to place
+    
+    
+    lw $t3, top($t0) # get the address of top
+    subi $t3, $t3, 7
+    sw $t3, top($t0)
+       
+    
     j insert_token # find the top of the column
 
 insert_token:
@@ -91,3 +99,38 @@ print_board_end:
 
 
 ###############################################################################################
+# AI ALGORITHM
+
+algorithm:
+    li $v0, 0
+    j ai_place_loop
+
+ai_place_loop:
+    # load a random number into $t0
+    li $v0, 41     # Service 41, random int
+    li $a0, 0          # Select random generator 0
+    syscall            # Generate random int (returns in $a0)
+
+    li $t1, 7
+    divu $t1, $a0, $t1 # divide by 7 to get a number between 0 and 6
+    mfhi $s1
+
+    move $a0, $s1 # store the random number in $a0
+    jal can_place
+
+    beq $v0, 0, ai_place_loop # if invalid, try again
+    move $a1, $s1 # store the random number in $a1
+    subi $a1, $a1, 1 # add 1 to the random number
+    
+    ###print
+    move $a0, $s1 # store the random number in $a0
+    li $v0, 1
+    syscall
+    la $a0, new_line
+    li $v0, 4
+    syscall
+    ###end print
+    
+    li $a0, 1
+    jal place
+    jr $ra
