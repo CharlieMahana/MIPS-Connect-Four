@@ -90,12 +90,13 @@ while:
 	#Check if the user input is available
 	#save the input in s0 since v0 is used in can_place
 	move	$s0, $v0
-	sub 	$a0, $s0, 1 #set a0 to col, which is v0 - 1
+	subi 	$s1, $s0, 1 #set a0 to col, which is v0 - 1
+	move $a0, $s1
 	jal can_place
 	beq	$v0, 0, invalid_input
 
 	#Valid input
-	move $a1, $a0 #set a1 to col number, which is a0
+	move $a1, $s1 #set a1 to col number, which is a0
 	li 	$a0, -1 #set a0 to color, which is -1
 	jal place
 	jal checker

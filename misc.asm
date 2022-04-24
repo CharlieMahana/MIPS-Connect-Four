@@ -20,7 +20,7 @@ can_place:
     mul $t0, $t0, 4
     lw $t1, top($t0)
     
-    li $t2, 7
+    li $t2, 0
     blt $t1, $t2, cannot_place # if the column is not full, return 1
     j can_place_end # if the column is full, return 0
 
@@ -45,7 +45,7 @@ place:
     
     
     lw $t3, top($t0) # get the address of top
-    subi $t3, $t3, 7
+    subi $t3, $t3, 7 # move top pointer up a row
     sw $t3, top($t0)
        
     
