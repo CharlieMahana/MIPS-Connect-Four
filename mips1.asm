@@ -45,6 +45,7 @@ tie: .asciiz "TIE\n"
 .align 2
 board: .word 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0
 
+.align 2
 #Initializes the indices where the highest token is located in each column: at first it starts at the bottom row
 top:	 .word 35, 36, 37, 38, 39, 40, 41
 
@@ -99,13 +100,13 @@ while:
 	li 	$a0, -1 #set a0 to color, which is -1
 	jal place
 	jal checker
-	beq		$v0, 1, _human_wins # if $t0 == $t1 then target
-	beq		$v0, -1, _computer_wins # if $t0 == $t1 then target
+	beq		$v0, 1, _computer_wins # if $t0 == $t1 then target 
+	beq		$v0, -1, _human_wins # if $t0 == $t1 then target
 	# jal print_board
 	jal algorithm #need to implement
 	jal checker
-	beq		$v0, 1, _human_wins # if $t0 == $t1 then target
-	beq		$v0, -1, _computer_wins # if $t0 == $t1 then target
+	beq		$v0, 1, _computer_wins # if $t0 == $t1 then target 
+	beq		$v0, -1, _human_wins # if $t0 == $t1 then target
 	
 	#Check for tie and increment number of moves
 	addi	$s1, $s1, 2
