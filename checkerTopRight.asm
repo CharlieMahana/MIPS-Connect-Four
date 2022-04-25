@@ -57,7 +57,7 @@ while1:
     #If row is less than 3
     bge		$t0, 3, endWhile1 # if $t0 >= $t1 then target
     while2:
-        #If col is less than 4
+        #If col is less than 7
         bge		$t1, 7, endWhile2 # if $t0 >= $t1 then target
         #Set t7 to 0; t7 is the total sum
         add		$t7, $0, $0
@@ -75,7 +75,7 @@ while1:
 
         add		$t2, $t2, 24			# $t2 = $t2 + 6*4; Add 6 to the index
         #Make $t2 word aligned
-        sll		$t2, $t2, 	2		# $t2 = $t2 << 0
+        # sll		$t2, $t2, 	2		# $t2 = $t2 << 0
         lw		$t3, board($t2)     # $t3 = board[t2]; Get the value of the board at the index
         add		$t7, $t7, $t3        # $t7 = $t7 + $t3; Add the value of the board at the index to the total sum
 
@@ -94,13 +94,14 @@ while1:
 
         #Increment col
         add		$t1, $t1, 1
-
+        j		while2				# jump to while2
     endWhile2:
 
     #Increment row
     add		$t0, $t0, 1
+    #Reset col
+    li      $t1, 3
     j		while1				# jump to while1 
-
 endWhile1:
 #No 4 in a row
 li		$v0, 0

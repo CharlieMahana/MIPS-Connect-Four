@@ -146,7 +146,6 @@ while:
 
     #Increment row
     add		$t0, $t0, 1
-
     j		while				# jump to while
     
 endWhile:
