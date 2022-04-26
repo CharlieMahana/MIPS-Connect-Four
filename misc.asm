@@ -6,7 +6,6 @@
 
     .text
 
-.globl print_board
 .globl place
 .globl can_place
 .globl algorithm
@@ -38,65 +37,52 @@ cannot_place:
 ###############################################################################################
 place:
     move $t0, $a1 # get the column to place in
+    move $a2, $a0	# get color
+    move $a0, $t0	# get horizontal location
     mul $t0, $t0, 4
     lw $t2, top($t0) # get the space to place token
-    mul $t2, $t2, 4
-    move $t1, $a0 # get the color to place
-    
+    div $a1, $t2, 7    # store row num
     
     lw $t3, top($t0) # get the address of top
     subi $t3, $t3, 7 # move top pointer up a row
     sw $t3, top($t0)
-       
     
-    j insert_token # find the top of the column
-
-insert_token:
-    sw $t1, board($t2) # insert the token
-    j print_board
+    move $t0, $a0	# column
+    move $t1, $a1	# row
+    move $t2, $a2       # color
+    
+    li $v0, 1
+    syscall		# print column
+    la $a0, new_line
+    li $v0, 4
+    syscall
+    
+    li $v0, 1
+    move $a0, $t1	# print row
+    syscall
+    
+    la $a0, new_line
+    li $v0, 4
+    syscall
+    
+    li $v0, 1
+    move $a0, $a2
+    syscall		# print color
+    
+    move $a0, $t0
+    move $a1, $t1
+    move $a2, $t2
+    
+	move $s5, $ra
+	jal place_token
+	move $ra, $s5
+        #sw $t1, board($t2) # insert the token
+	jr $ra
 ###############################################################################################
 
 
 # PRINT BOARD
 ###############################################################################################
-
-
-print_board:
-    li $t0, 0 # counter for column
-    j print_board_loop # start the loop
-
-print_board_loop:
-    lw $a0, board($t0) # start at the first one in the row
-    li $v0, 1
-    syscall
-    addi $t0, $t0, 4 # move to the next column
-    lw $a0, board($t0) # start at the first one in the row
-    syscall
-    addi $t0, $t0, 4 # move to the next column
-    lw $a0, board($t0) # start at the first one in the row
-    syscall
-    addi $t0, $t0, 4 # move to the next column
-    lw $a0, board($t0) # start at the first one in the row
-    syscall
-    addi $t0, $t0, 4 # move to the next column
-    lw $a0, board($t0) # start at the first one in the row
-    syscall
-    addi $t0, $t0, 4 # move to the next column
-    lw $a0, board($t0) # start at the first one in the row
-    syscall
-    addi $t0, $t0, 4 # move to the next column
-    lw $a0, board($t0) # start at the first one in the row
-    syscall
-    addi $t0, $t0, 4 # move to the next column
-    la $a0, new_line
-    li $v0, 4
-    syscall
-    beq $t0, 168, print_board_end # if we are at the end of the board, return
-    j print_board_loop # if we are not at the end of the board, continue
-
-print_board_end:
-    jr $ra
-
 
 ###############################################################################################
 # AI ALGORITHM
@@ -139,12 +125,11 @@ ai_place_loop:
 
     beq $v0, 0, ai_place_loop # if invalid, try again
     move $a1, $s1 # store the random number in $a1
-    subi $a1, $a1, 1 # add 1 to the random number
     
     ###print
-    move $a0, $s1 # store the random number in $a0
-    li $v0, 1
-    syscall
+    #move $a0, $s1 # store the random number in $a0
+    #li $v0, 1
+    #syscall
     la $a0, new_line
     li $v0, 4
     syscall
@@ -162,3 +147,6 @@ ai_place_loop:
     addi $sp, $sp, 4
 
     jr $ra
+
+test_thing:
+	jr $ra

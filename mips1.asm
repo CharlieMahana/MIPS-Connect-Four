@@ -57,9 +57,13 @@ top:	 .word 35, 36, 37, 38, 39, 40, 41
     main:
 
 	#Count for how many moves
+
+	jal initialize_graphics
+
 	li 		$s1, 0
+	
 while:
-	jal 	print_board
+	#jal 	print_board
 
 	#Output wantToPlay
 	li  	$v0, 4           # service 1 is print integer
