@@ -45,7 +45,7 @@ place:
     
     
     lw $t3, top($t0) # get the address of top
-    subi $t3, $t3, 7 # move top pointer up a row
+    subi $t3, $t3, 7
     sw $t3, top($t0)
        
     
@@ -57,16 +57,17 @@ insert_token:
 
 unPlace:
 	move $t0, $a1 #get the column to take the piece out of
-	sll $t0, $t0, 2
-	lw $t2, top($t0) #get the soace to place the token
-	sll $t2, $t2, 2
+	sll $t0, $t0, 2 #change the offset
+	lw $t2, top($t0) #get the space to unplace the token
+	sll $t2, $t2, 2 #shift that space by 4 to align with board
 	
 	#change top to 7 more
 	lw $t3, top($t0)
 	addi $t3, $t3, 7
 	sw $t3, top($t0)
 	
-	#clear out board at board($t2)
+	#clear out board at board($t3 * 4)
+	sll $t2, $t3, 2
 	sw $zero, board($t2)
 	
 	jr $ra
@@ -168,11 +169,11 @@ algorithm:
     addi $sp, $sp, 4
     ### ai_place_loop_1 end
     move $t1, $v0
-	bgez $v0, ai_final_place #$v0 is the column where we will place it
+	# bgez $v0, ai_final_place #$v0 is the column where we will place it
 	
 	
 	# once a position is decided, we will jump to this function
-	# @param - $v0 the column index where it will be placed
+	# @param - $t1 the column index where it will be placed
   ai_final_place:
     #print
     add $a0, $t1, 1 # put column index + 1 to be printed
@@ -204,16 +205,16 @@ algorithm:
 # $v0
 ai_place_loop_1:
 	# $t0 - column index under consideration
-	li $t0, -1
+	li $s2, -1
   ai_place_loop_1_beg:
-	addi $t0, $t0, 1
-  	bge $t0, 7, ai_place_loop_1_end
+	addi $s2, $s2, 1
+  	bge $s2, 7, ai_place_loop_1_end
 
 	### Save the return address
     subi $sp, $sp, 4
     sw $ra, 0($sp)
     
-    move $a0, $t0
+    move $a0, $s2
     jal can_place
 
     #restore the return address
@@ -228,7 +229,7 @@ ai_place_loop_1:
     subi $sp, $sp, 4
     sw $ra, 0($sp)
     
-    move $a1, $t0 #column
+    move $a1, $s2 #column
     li $a0, -1 #color
     jal placeTemp
 
@@ -252,7 +253,7 @@ ai_place_loop_1:
     subi $sp, $sp, 4
     sw $ra, 0($sp)
     
-    move $a1, $t0 #column
+    move $a1, $s2 #column
     jal unPlace
 
     #restore the return address
@@ -267,7 +268,7 @@ ai_place_loop_1:
     subi $sp, $sp, 4
     sw $ra, 0($sp)
     
-    move $a1, $t0 #column
+    move $a1, $s2 #column
     li $a0, 1 #color
     jal placeTemp
 
@@ -291,7 +292,7 @@ ai_place_loop_1:
     subi $sp, $sp, 4
     sw $ra, 0($sp)
     
-    move $a1, $t0 #column
+    move $a1, $s2 #column
     jal unPlace
 
     #restore the return address
@@ -303,7 +304,7 @@ ai_place_loop_1:
     or $t1, $s0, $s1 #if both placements are zero, then we go back to the loop
     beqz $t1, ai_place_loop_1_beg
     # if it's not zero, then return this column
-    move $v0, $t0
+    move $v0, $s2
     jr $ra
     
   ai_place_loop_1_end:
@@ -317,20 +318,20 @@ ai_place_loop_1:
 # $v0
 ai_place_loop_2:
 	# $t0 - column index in loop
-	li $t0, -1
+	li $s0, -1
 	# $t1 - min top number found so far
-	li $t1, 41
+	li $s1, 41
 	# $t2 - highest column index found so far
-	li $t2, 0
+	li $s2, 0
 	
   ai_place_loop_2_beg:
-	addi $t0, $t0, 1
-	bge $t0, 7, ai_place_loop_2_end
+	addi $s0, $s0, 1
+	bge $s0, 7, ai_place_loop_2_end
 	### Save the return address
     subi $sp, $sp, 4
     sw $ra, 0($sp)
     
-    move $a0, $t0
+    move $a0, $s0
     jal can_place
 
     #restore the return address
@@ -340,19 +341,13 @@ ai_place_loop_2:
     beq $v0, 0, ai_place_loop_2_beg # if invalid, go to next index
     
     #valid - check if top($t0) is less than $t1, if so, change $t1 to top($t0) and change $t2 to $t0
-    lw $t3, top($t0)
-    bgt $t3, $t1, ai_place_loop_2_beg
+    lw $t3, top($s0)
+    bgt $t3, $s1, ai_place_loop_2_beg
     
-    move $t1, $t3
-    move $t2, $t0
+    move $s1, $t3
+    move $s2, $s0
 
   ai_place_loop_2_end:
 	# put highest col found into $v0 and return it
-	move $v0, $t2
+	move $v0, $s2
 	jr $ra
-
-
-
-
-
-
