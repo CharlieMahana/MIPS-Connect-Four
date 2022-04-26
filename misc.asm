@@ -45,7 +45,7 @@ place:
     
     
     lw $t3, top($t0) # get the address of top
-    subi $t3, $t3, 7
+    subi $t3, $t3, 7 # move top pointer up a row
     sw $t3, top($t0)
        
     

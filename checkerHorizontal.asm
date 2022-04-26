@@ -83,7 +83,7 @@ add		$t0, $0, $0
 
 while:
     #If col is less than 6
-    bge		$t1, 6, endWhile # if $t0 >= $t1 then target
+    bge		$t0, 6, endWhile # if $t0 >= $t1 then target
     #Set t7 to 0; t7 is the total sum
     add		$t7, $0, $0
 
@@ -161,6 +161,7 @@ while:
 
     #Increment row
     add		$t0, $t0, 1
+    j		while				# jump to while
 
 endWhile:
 

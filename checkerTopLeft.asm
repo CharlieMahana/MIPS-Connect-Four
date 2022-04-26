@@ -90,11 +90,13 @@ while1:
 
         #Increment col
         add		$t1, $t1, 1
-
+        j        while2
     endWhile2:
 
     #Increment row
     add		$t0, $t0, 1
+    #Reset col
+    add		$t1, $0, $0 
     j		while1				# jump to while1 
 
 endWhile1:
