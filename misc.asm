@@ -41,41 +41,22 @@ place:
     move $a0, $t0	# get horizontal location
     mul $t0, $t0, 4
     lw $t2, top($t0) # get the space to place token
+    
     div $a1, $t2, 7    # store row num
+    mul $t2, $t2, 4	# get place to store in checker array
     
     lw $t3, top($t0) # get the address of top
     subi $t3, $t3, 7 # move top pointer up a row
     sw $t3, top($t0)
-    
-    move $t0, $a0	# column
-    move $t1, $a1	# row
-    move $t2, $a2       # color
-    
-    li $v0, 1
-    syscall		# print column
-    la $a0, new_line
-    li $v0, 4
-    syscall
-    
-    li $v0, 1
-    move $a0, $t1	# print row
-    syscall
-    
-    la $a0, new_line
-    li $v0, 4
-    syscall
-    
-    li $v0, 1
-    move $a0, $a2
-    syscall		# print color
-    
-    move $a0, $t0
-    move $a1, $t1
-    move $a2, $t2
+
+
+    sw $a2, board($t2) # insert the token
     
 	move $s5, $ra
 	jal place_token
+	jal token_drop_noise
 	move $ra, $s5
+	
         #sw $t1, board($t2) # insert the token
 	jr $ra
 ###############################################################################################
