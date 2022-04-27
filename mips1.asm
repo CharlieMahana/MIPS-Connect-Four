@@ -73,6 +73,7 @@ while:
 	
 invalid_input:
 	#Output outOfBounds
+	jal error_noise
 	jal throw_illegal_input_error
 	j get_input 
 
@@ -121,6 +122,7 @@ invalid_input:
 	j		while
 
 column_full:
+	jal error_noise
 	jal throw_column_full_error
 	j get_input
 
