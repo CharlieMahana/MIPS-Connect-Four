@@ -71,11 +71,9 @@ while:
     syscall
 	j get_input 
 	
-	invalid_input:
+invalid_input:
 	#Output outOfBounds
-	li  	$v0, 4           # service 1 is print integer
-    la		$a0, outOfBounds
-    syscall
+	jal throw_illegal_input_error
 	j get_input 
 
 	not_available:
@@ -98,7 +96,7 @@ while:
 	subi 	$s1, $s0, 1 #set a0 to col, which is v0 - 1
 	move $a0, $s1
 	jal can_place
-	beq	$v0, 0, invalid_input
+	beq	$v0, 0, column_full
 
 	#Valid input
 	move $a1, $s1 #set a1 to col number, which is a0
@@ -121,6 +119,10 @@ while:
 	addi	$s1, $s1, 2
 	beq		$s1, 42 , _tie # if $t0 == $t1 then target
 	j		while
+
+column_full:
+	jal throw_column_full_error
+	j get_input
 
 endWhile:
 

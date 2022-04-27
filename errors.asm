@@ -5,6 +5,7 @@ illegal_input_error:	.asciiz "Illegal Input: make sure you enter a legal input s
 
 	.text
 	
+	.globl	throw_illegal_input_error	
 	.globl	throw_column_full_error
 	
 throw_column_full_error:
