@@ -303,7 +303,9 @@ ai_place_loop_2:
     beq $v0, 0, ai_place_loop_2_beg # if invalid, go to next index
     
     #valid - check if top($t0) is less than $t1, if so, change $t1 to top($t0) and change $t2 to $t0
+    sll $s0, $s0, 2
     lw $t3, top($s0)
+    srl $s0, $s0, 2
     bgt $t3, $s1, ai_place_loop_2_beg
     
     move $s1, $t3
