@@ -105,11 +105,12 @@ while:
 	li 	$a0, -1 #set a0 to color, which is -1
 	jal place
 	jal checker
+
+	beq		$v0, 1, _computer_wins # if $t0 == $t1 then target 
+	beq		$v0, -1, _human_wins # if $t0 == $t1 then target
 	li $a0, 500
 	li $v0, 32
 	syscall
-	beq		$v0, 1, _computer_wins # if $t0 == $t1 then target 
-	beq		$v0, -1, _human_wins # if $t0 == $t1 then target
 	# jal print_board
 	jal algorithm #need to implement
 	jal checker
@@ -131,12 +132,14 @@ _tie:
 	j end
 _human_wins:
 	#Output humanWin
+	jal win_theme
 	li  	$v0, 4           # service 1 is print integer
     la		$a0, humanWin
     syscall
 	j end
 _computer_wins:
 	#Output robotWin
+	jal loss_theme
 	li  	$v0, 4           # service 1 is print integer
     la		$a0, robotWin
     syscall
