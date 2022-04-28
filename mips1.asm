@@ -41,6 +41,7 @@ colFull: .asciiz "Please enter a column that is not full\n"
 humanWin: .asciiz "Human wins!\n"
 robotWin: .asciiz "Robot wins!\n"
 tie: .asciiz "TIE\n"
+input: .space 100
 
 .align 2
 board: .word 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0, 0,0,0,0,0,0
@@ -84,10 +85,22 @@ invalid_input:
 
 	get_input:
 	#Get input
-	li		$v0, 5           # service 5 is scanf
+    la $a0, input
+	li $a1, 99
+	li $v0, 8
 	syscall
+	# li		$v0, 5           # service 5 is scanf
+	# syscall
 
 	#Check if the user input is valid
+    la $t2, input
+	lb $t0, 0($t2)	#character 1
+	lb $t1, 1($t2)	#character 2
+    beq $t0, 10, invalid_input # user just pressed enter
+    bne $t1, 10, invalid_input # input length == 1
+    subi $v0, $t0, 48 #convert the string to a number
+
+    #check if user input is within bounds
 	blt	$v0, 1 , invalid_input
 	bgt	$v0, 7 , invalid_input
 
